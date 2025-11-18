@@ -1,0 +1,20 @@
+import 'package:http/http.dart';
+
+void main(){
+  print('Hello, Dart!');
+  requestData();
+}
+
+requestData(){
+  String url = 'https://gist.githubusercontent.com/Duardoh/741a46cb3b5243f6bb31289840734e2f/raw/ce2e3df291b9826aa8f3e02c5a9c400a39937bc7/accounts.json';
+  Future<Response> futureResponse = get(Uri.parse(url));
+  print(futureResponse);
+  //pedir para o dart fazer algo quando a operação assíncrona for concluída
+}
+
+/*
+Para instalar o paconte de http
+dart pub add http
+
+vai adcionar a dependencia no arquivo pubspec.yaml
+*/
