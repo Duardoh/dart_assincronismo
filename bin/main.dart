@@ -10,6 +10,11 @@ requestData(){
   Future<Response> futureResponse = get(Uri.parse(url));
   print(futureResponse);
   //pedir para o dart fazer algo quando a operação assíncrona for concluída
+  //then é usado para registrar uma função de retorno de chamada que será executada quando a Future for concluída com sucesso
+  futureResponse.then((Response response) { //o que vem de resultado da requisição assincrona é uma Resposta
+    print(response);
+    print(response.body);
+  },);
 }
 
 /*
