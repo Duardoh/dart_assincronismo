@@ -1,7 +1,8 @@
 import 'package:http/http.dart';
 import 'dart:convert';
+import 'package:dart_assincronismo/api_key.dart';
 
-void main(){
+void main() {
   print('Hello, Dart!');
   // requestData();
   // requestDataAsync();
@@ -13,14 +14,17 @@ void main(){
   });
 }
 
-requestData(){
-  String url = 'https://gist.githubusercontent.com/Duardoh/741a46cb3b5243f6bb31289840734e2f/raw/ce2e3df291b9826aa8f3e02c5a9c400a39937bc7/accounts.json';
+requestData() {
+  String url =
+      'https://gist.githubusercontent.com/Duardoh/741a46cb3b5243f6bb31289840734e2f/raw/ce2e3df291b9826aa8f3e02c5a9c400a39937bc7/accounts.json';
   Future<Response> futureResponse = get(Uri.parse(url));
   print(futureResponse);
   //pedir para o dart fazer algo quando a operação assíncrona for concluída
   //then é usado para registrar uma função de retorno de chamada que será executada quando a Future for concluída com sucesso
-  futureResponse.then( //agenda uma função para ser executada quando a Future for concluída
-    (Response response) { //o que vem de resultado da requisição assincrona é uma Resposta
+  futureResponse.then(
+    //agenda uma função para ser executada quando a Future for concluída
+    (Response response) {
+      //o que vem de resultado da requisição assincrona é uma Resposta
       print(response);
       print(response.body);
       List<dynamic> listAccounts = json.decode(response.body);
@@ -37,13 +41,16 @@ requestData(){
 }
 
 //Todo retorno de uma função async tem que ser um Future
-Future<List<dynamic>>requestDataAsync() async { //Colocando o ASYNC na função para mostrar que ela tem operações assíncronas
-  String url = 'https://gist.githubusercontent.com/Duardoh/741a46cb3b5243f6bb31289840734e2f/raw/ce2e3df291b9826aa8f3e02c5a9c400a39937bc7/accounts.json';
-  Response response = await get(Uri.parse(url)); //await = vou demorar aqui até receber a resposta, vou esperar. Só faz sentido quando estamos usando o Future
+Future<List<dynamic>> requestDataAsync() async {
+  //Colocando o ASYNC na função para mostrar que ela tem operações assíncronas
+  String url =
+      'https://gist.githubusercontent.com/Duardoh/741a46cb3b5243f6bb31289840734e2f/raw/ce2e3df291b9826aa8f3e02c5a9c400a39937bc7/accounts.json';
+  Response response = await get(
+    Uri.parse(url),
+  ); //await = vou demorar aqui até receber a resposta, vou esperar. Só faz sentido quando estamos usando o Future
   // print(json.decode(response.body)[0]);
   // print('De fato a última coisa a aconntecer na função');
   return json.decode(response.body);
-
 }
 
 sendDataAsync(Map<String, dynamic> mapAccount) async {
@@ -52,11 +59,31 @@ sendDataAsync(Map<String, dynamic> mapAccount) async {
   String content = json.encode(listAccounts);
   print(content);
 
-  String url = 'https://gist.githubusercontent.com/Duardoh/741a46cb3b5243f6bb31289840734e2f/raw/ce2e3df291b9826aa8f3e02c5a9c400a39937bc7/accounts.json';
-  Response response = await post(Uri.parse(url), body: content);
+  String url = 'https://api.github.com/gists/741a46cb3b5243f6bb31289840734e2f';
+
+  Response response = await post(
+    Uri.parse(url),
+    headers: {"Authorization": "Bearer $githubApiKey"},
+    body: json.encode({
+      "description": "accounts.json",
+      "public": true,
+      "files": {
+        "accounts.json": {"content": content},
+      },
+    }),
+  );
+
   print(response.statusCode); //código 200 quer dizer que deu tudo certo (200 a 299)
   //https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Reference/Status/403
-  switch (response.statusCode) {
+}
+
+/*
+Para instalar o paconte de http
+dart pub add http
+
+vai adcionar a dependencia no arquivo pubspec.yaml
+
+switch (response.statusCode) {
     case 200:
       // A requisição foi bem-sucedida, processa os dados
       print('Dados recebidos: ${response.body}');
@@ -81,10 +108,10 @@ sendDataAsync(Map<String, dynamic> mapAccount) async {
       // Recurso não encontrado
       print('Servidor entendeu o pedido, mas se recusa a autorizá-lo.');
       break;
-     case 404:
+    case 404:
       // Recurso não encontrado
       print('Recurso não encontrado.');
-      break; 
+      break;
     case 500:
       // Erro interno no servidor
       print('Erro no servidor. Tente novamente mais tarde.');
@@ -93,12 +120,4 @@ sendDataAsync(Map<String, dynamic> mapAccount) async {
       // Outros códigos de erro
       print('Erro desconhecido: ${response.statusCode}');
   }
-
-}
-
-/*
-Para instalar o paconte de http
-dart pub add http
-
-vai adcionar a dependencia no arquivo pubspec.yaml
 */
