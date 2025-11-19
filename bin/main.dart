@@ -52,6 +52,48 @@ sendDataAsync(Map<String, dynamic> mapAccount) async {
   String content = json.encode(listAccounts);
   print(content);
 
+  String url = 'https://gist.githubusercontent.com/Duardoh/741a46cb3b5243f6bb31289840734e2f/raw/ce2e3df291b9826aa8f3e02c5a9c400a39937bc7/accounts.json';
+  Response response = await post(Uri.parse(url), body: content);
+  print(response.statusCode); //código 200 quer dizer que deu tudo certo (200 a 299)
+  //https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Reference/Status/403
+  switch (response.statusCode) {
+    case 200:
+      // A requisição foi bem-sucedida, processa os dados
+      print('Dados recebidos: ${response.body}');
+      break;
+    case 201:
+      // Recurso criado com sucesso
+      print('Recurso criado com sucesso.');
+      break;
+    case 204:
+      // Nenhum conteúdo retornado
+      print('Operação concluída, mas sem dados para exibir.');
+      break;
+    case 400:
+      // Requisição inválida
+      print('Erro na requisição: ${response.reasonPhrase}');
+      break;
+    case 401:
+      // Não autorizado
+      print('Acesso não autorizado. Verifique suas credenciais.');
+      break;
+    case 403:
+      // Recurso não encontrado
+      print('Servidor entendeu o pedido, mas se recusa a autorizá-lo.');
+      break;
+     case 404:
+      // Recurso não encontrado
+      print('Recurso não encontrado.');
+      break; 
+    case 500:
+      // Erro interno no servidor
+      print('Erro no servidor. Tente novamente mais tarde.');
+      break;
+    default:
+      // Outros códigos de erro
+      print('Erro desconhecido: ${response.statusCode}');
+  }
+
 }
 
 /*
