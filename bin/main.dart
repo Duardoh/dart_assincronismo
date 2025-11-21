@@ -1,17 +1,29 @@
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:dart_assincronismo/api_key.dart';
+import 'dart:async';
+
+//Criando uma Stream 
+//Sempre mandando informações
+//Os dados que vamos receber são do tipo String
+StreamController<String> streamController = StreamController<String>();
+
 
 void main() {
-  print('Hello, Dart!');
+  //Ouvindo uma Stream
+  StreamSubscription streamSubscription = 
+    streamController.stream.listen((String info){
+      print(info);
+    },);
+  //print('Hello, Dart!');
   // requestData();
   // requestDataAsync();
-  sendDataAsync({
-    "id": "NEW001",
-    "name": "Eduardo",
-    "lastName": "Rodrigues",
-    "balance": 2500.00,
-  });
+  // sendDataAsync({
+  //   "id": "NEW001",
+  //   "name": "Eduardo",
+  //   "lastName": "Rodrigues",
+  //   "balance": 2500.00,
+  // });
 }
 
 requestData() {
